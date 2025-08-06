@@ -132,6 +132,13 @@ Mentor hocalarımıza ve ekip arkadaşlarımıza değerli katkıları için teş
 </li>
 </ul>
 
+<section>
+  <h2>⚠️ Lisans ve Kullanım Hakkında</h2>
+  <p>Bu proje, Miuul Data Science Bootcamp kapsamında gerçekleştirilmiştir. Öğrenci başarı düzeylerinin tahmini amacıyla makine öğrenmesi teknikleri uygulanmıştır.</p>
+  <p>Projede yer alan kodlar, modellemeler ve yorumlar grup çalışmasıyla geliştirilmiştir ve özgün katkılar içermektedir. Bu nedenle proje MIT lisansı ile paylaşılmaktadır.</p>
+  <p>Lütfen lisans şartlarını okuyunuz: <a href="./LICENSE">LICENSE</a></p>
+</section>
+
 
 
 
