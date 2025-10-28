@@ -79,8 +79,22 @@ def one_hot_encoder(dataframe, categorical_cols, drop_first=True):
                                 dtype=int)
     return dataframe  # BU SATIR EKLENMELİ
 
-def student_data_prep(dataframe):
-
+def student_data_prep(dataframe, is_training=True):
+    """
+    Prepare student data for training or prediction.
+    
+    Parameters:
+    -----------
+    dataframe : pd.DataFrame
+        Input dataframe with student features
+    is_training : bool, default=True
+        If True, expects G3 column and creates G3-dependent features.
+        If False, creates placeholder features for prediction mode.
+    """
+    
+    # Make a copy to avoid modifying the original
+    dataframe = dataframe.copy()
+    
     #dataframe['NEW_internet_romantic_interaction'] = (dataframe['internet'].map({"yes": 1, "no": 0}) * dataframe['romantic'].map(
      #   {"yes": 1, "no": 0})) + 1
     dataframe['NEW_study_fail_interaction'] = dataframe['studytime'] * dataframe['failures']
@@ -88,30 +102,60 @@ def student_data_prep(dataframe):
     #dataframe['NEW_study_fail_time_socio'] = dataframe['studytime'] * dataframe['failures'] * dataframe['famsize'].map({"LE3": 1, "GT3": 0})
     #dataframe['NEW_school_famsize_interaction'] = dataframe['school'] + "_" + dataframe['famsize']
     dataframe['NEW_alc_health_interaction'] = dataframe['Dalc'] * dataframe['Walc'] * dataframe['health']
-    dataframe['NEW_famsup_G3_diff'] = dataframe.groupby('famsup')['G3'].transform('mean')
-    dataframe['NEW_school_avg'] = dataframe.groupby('school')['G3'].transform('mean')
+    
+    # Check if G3 exists (training mode) or not (prediction mode)
+    if 'G3' not in dataframe.columns:
+        is_training = False
+    
+    if is_training:
+        # Training mode: create features using G3
+        dataframe['NEW_famsup_G3_diff'] = dataframe.groupby('famsup')['G3'].transform('mean')
+        dataframe['NEW_school_avg'] = dataframe.groupby('school')['G3'].transform('mean')
+    else:
+        # Prediction mode: use default/mean values from training (you should save these during training)
+        # For now, using reasonable defaults
+        dataframe['NEW_famsup_G3_diff'] = 11.0  # Average G3 from training data
+        dataframe['NEW_school_avg'] = 11.0  # Average G3 from training data
 
-    # Kategorik G3 tanımlaması
-    def categorize_grade(grade):
-        if grade >= 15:
-            return 'Başarılı'
-        elif grade >= 10:
-            return 'Ortalama'
-        else:
-            return 'Düşük'
+    if is_training:
+        # Kategorik G3 tanımlaması
+        def categorize_grade(grade):
+            if grade >= 15:
+                return 'Başarılı'
+            elif grade >= 10:
+                return 'Ortalama'
+            else:
+                return 'Düşük'
 
-    dataframe['NEW_G3_category'] = dataframe['G3'].apply(categorize_grade)
+        dataframe['NEW_G3_category'] = dataframe['G3'].apply(categorize_grade)
+    else:
+        # Prediction mode: create a placeholder category (will be one-hot encoded later)
+        dataframe['NEW_G3_category'] = 'Ortalama'  # Default category
 
     # Diğer yeni değişkenler
     dataframe['NEW_avg_grade'] = (dataframe['G1'] + dataframe['G2']) / 2
     dataframe['NEW_total_parent_education'] = dataframe['Medu'] + dataframe['Fedu']
-    dataframe['NEW_parent_education_effect_on_G3'] = (dataframe['Medu'] + dataframe['Fedu']) * dataframe['G3']
+    
+    if is_training:
+        dataframe['NEW_parent_education_effect_on_G3'] = (dataframe['Medu'] + dataframe['Fedu']) * dataframe['G3']
+    else:
+        # Prediction mode: use a reasonable default multiplier
+        dataframe['NEW_parent_education_effect_on_G3'] = (dataframe['Medu'] + dataframe['Fedu']) * 11.0
+    
     dataframe['NEW_parent_education_socio_interaction'] = (dataframe['Medu'] + dataframe['Fedu']) * (
                 dataframe['famsize'].map({"LE3": 1, "GT3": 0}) + 1)
     dataframe['NEW_parent_education_failures_interaction'] = (dataframe['Medu'] + dataframe['Fedu']) * (dataframe['failures'] + 1)
-    dataframe['NEW_social_support_success_interaction'] = (dataframe['famsup'].map({'yes': 1, 'no': 0}) + dataframe['schoolsup'].map(
-        {'yes': 1, 'no': 0})) * dataframe['G3']
-    dataframe['NEW_nursery_success_interaction'] = dataframe['nursery'].map({'yes': 1, 'no': 0}) * dataframe['G3']
+    
+    if is_training:
+        dataframe['NEW_social_support_success_interaction'] = (dataframe['famsup'].map({'yes': 1, 'no': 0}) + dataframe['schoolsup'].map(
+            {'yes': 1, 'no': 0})) * dataframe['G3']
+        dataframe['NEW_nursery_success_interaction'] = dataframe['nursery'].map({'yes': 1, 'no': 0}) * dataframe['G3']
+    else:
+        # Prediction mode: use default values
+        dataframe['NEW_social_support_success_interaction'] = (dataframe['famsup'].map({'yes': 1, 'no': 0}) + dataframe['schoolsup'].map(
+            {'yes': 1, 'no': 0})) * 11.0
+        dataframe['NEW_nursery_success_interaction'] = dataframe['nursery'].map({'yes': 1, 'no': 0}) * 11.0
+
     dataframe['NEW_reason_traveltime_interaction'] = dataframe['reason'].map({'home': 1, 'reputation': 2, 'course': 3, 'other': 4}) * \
                                               dataframe['traveltime']
     dataframe['NEW_goout_traveltime_interaction'] = dataframe['goout'] * dataframe['traveltime']
@@ -138,14 +182,21 @@ def student_data_prep(dataframe):
     for col in binary_cols:
         dataframe = label_encoder(dataframe, col)
 
-    multi_class_cols = [col for col in dataframe.columns if dataframe[col].dtype == "O" and dataframe[col].nunique() > 2]
+    # For multi-class columns, we need to handle them differently in training vs prediction
+    # In training mode, get_dummies creates all columns
+    # In prediction mode, we rely on the alignment step in the API to add missing columns
+    multi_class_cols = [col for col in dataframe.columns if dataframe[col].dtype == "O"]
+    
+    if multi_class_cols:
+        dataframe = one_hot_encoder(dataframe, multi_class_cols)
 
-    dataframe = one_hot_encoder(dataframe, multi_class_cols)
-
-    y = dataframe['G3']  # Hedef değişken: Öğrencinin final sınavı puanı
-    X = dataframe.drop(['G3'], axis=1)
-
-    return X,y
+    if is_training:
+        y = dataframe['G3']  # Hedef değişken: Öğrencinin final sınavı puanı
+        X = dataframe.drop(['G3'], axis=1)
+        return X, y
+    else:
+        # Prediction mode: no G3 to return
+        return dataframe, None
 
 
 def evaluate_models(models, X, y):
@@ -229,7 +280,7 @@ def voting_regressor(best_models, X, y, cv=5):
     return voting_reg
 
 def main():
-    df = pd.read_csv("student-por.csv")
+    df = pd.read_csv("C:/Users/merve/Desktop/miuul/final_project/student_per_final_project/student-por.csv")
     X,y = student_data_prep(df)
     evaluate_models(regression_models,X,y)
     best_models = hyperparameter_optimization_regression(X,y,regression_models)
