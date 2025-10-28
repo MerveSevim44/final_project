@@ -139,6 +139,51 @@ Mentor hocalarımıza ve ekip arkadaşlarımıza değerli katkıları için teş
   <p>Lütfen lisans şartlarını okuyunuz: <a href="./LICENSE">LICENSE</a></p>
 </section>
 
+## Setup (Windows - cmd.exe)
+
+Follow these steps to create a virtual environment, activate it (Windows Command Prompt), and install the project dependencies:
+
+1. Create a virtual environment in the project folder:
+
+  ```cmd
+  python -m venv .venv
+  ```
+
+2. Activate the virtual environment (Windows cmd.exe):
+
+  ```cmd
+  .\.venv\Scripts\activate
+  ```
+
+  If you use PowerShell instead, run:
+
+  ```powershell
+  .\.venv\Scripts\Activate.ps1
+  ```
+
+3. Upgrade pip (optional but recommended):
+
+  ```cmd
+  python -m pip install --upgrade pip
+  ```
+
+4. Install required packages from `requirements.txt`:
+
+  ```cmd
+  pip install -r requirements.txt
+  ```
+
+Notes:
+- The `requirements.txt` file in the project root lists packages used by the backend (FastAPI, scikit-learn, LightGBM, XGBoost, CatBoost, pandas, etc.).
+- If you plan to run the API server, you can start it with:
+
+  ```cmd
+  uvicorn backend.main:app --reload
+  ```
+
+  This assumes you're running the command from the project root. The API will listen on http://127.0.0.1:8000 by default.
+
+
 
 
 
