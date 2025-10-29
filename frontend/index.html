@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Grade Prediction</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 Student Final Grade Prediction</h1>
+            <p>Predict your final grade based on various academic and personal factors</p>
+        </header>
+
+        <main>
+            <div class="form-container">
+                <form id="predictionForm">
+                    <!-- School & Personal Information -->
+                    <fieldset>
+                        <legend>📋 Personal Information</legend>
+                        
+                        <div class="form-group">
+                            <label for="school">School</label>
+                            <select id="school" name="school" required>
+                                <option value="">Select school...</option>
+                                <option value="GP">Gabriel Pereira (GP)</option>
+                                <option value="MS">Mousinho da Silveira (MS)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sex">Sex</label>
+                            <select id="sex" name="sex" required>
+                                <option value="">Select sex...</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" name="age" min="15" max="25" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">Address Type</label>
+                            <select id="address" name="address" required>
+                                <option value="">Select address type...</option>
+                                <option value="U">Urban</option>
+                                <option value="R">Rural</option>
+                            </select>
+                        </div>
+                    </fieldset>
+
+                    <!-- Family Information -->
+                    <fieldset>
+                        <legend>👨‍👩‍👧‍👦 Family Information</legend>
+                        
+                        <div class="form-group">
+                            <label for="famsize">Family Size</label>
+                            <select id="famsize" name="famsize" required>
+                                <option value="">Select family size...</option>
+                                <option value="LE3">Less than or equal to 3</option>
+                                <option value="GT3">Greater than 3</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Pstatus">Parents Cohabitation Status</label>
+                            <select id="Pstatus" name="Pstatus" required>
+                                <option value="">Select status...</option>
+                                <option value="T">Together</option>
+                                <option value="A">Apart</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Medu">Mother's Education Level</label>
+                            <select id="Medu" name="Medu" required>
+                                <option value="">Select education level...</option>
+                                <option value="0">None</option>
+                                <option value="1">Primary (1st to 4th grade)</option>
+                                <option value="2">Lower Secondary (5th to 9th grade)</option>
+                                <option value="3">Upper Secondary (10th to 12th grade)</option>
+                                <option value="4">Higher Education</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Fedu">Father's Education Level</label>
+                            <select id="Fedu" name="Fedu" required>
+                                <option value="">Select education level...</option>
+                                <option value="0">None</option>
+                                <option value="1">Primary (1st to 4th grade)</option>
+                                <option value="2">Lower Secondary (5th to 9th grade)</option>
+                                <option value="3">Upper Secondary (10th to 12th grade)</option>
+                                <option value="4">Higher Education</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Mjob">Mother's Job</label>
+                            <select id="Mjob" name="Mjob" required>
+                                <option value="">Select job...</option>
+                                <option value="teacher">Teacher</option>
+                                <option value="health">Health Care Related</option>
+                                <option value="services">Civil Services</option>
+                                <option value="at_home">At Home</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Fjob">Father's Job</label>
+                            <select id="Fjob" name="Fjob" required>
+                                <option value="">Select job...</option>
+                                <option value="teacher">Teacher</option>
+                                <option value="health">Health Care Related</option>
+                                <option value="services">Civil Services</option>
+                                <option value="at_home">At Home</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="guardian">Guardian</label>
+                            <select id="guardian" name="guardian" required>
+                                <option value="">Select guardian...</option>
+                                <option value="mother">Mother</option>
+                                <option value="father">Father</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </fieldset>
+
+                    <!-- Academic Information -->
+                    <fieldset>
+                        <legend>📚 Academic Information</legend>
+                        
+                        <div class="form-group">
+                            <label for="reason">Reason to Choose School</label>
+                            <select id="reason" name="reason" required>
+                                <option value="">Select reason...</option>
+                                <option value="course">Course Preference</option>
+                                <option value="proximity">Proximity to Home</option>
+                                <option value="reputation">School Reputation</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="traveltime">Travel Time (minutes)</label>
+                            <select id="traveltime" name="traveltime" required>
+                                <option value="">Select travel time...</option>
+                                <option value="1">&lt;15 minutes</option>
+                                <option value="2">15-30 minutes</option>
+                                <option value="3">30-60 minutes</option>
+                                <option value="4">&gt;60 minutes</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="studytime">Study Time per Week (hours)</label>
+                            <select id="studytime" name="studytime" required>
+                                <option value="">Select study time...</option>
+                                <option value="1">&lt;2 hours</option>
+                                <option value="2">2-5 hours</option>
+                                <option value="3">5-10 hours</option>
+                                <option value="4">&gt;10 hours</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="failures">Number of Past Class Failures</label>
+                            <input type="number" id="failures" name="failures" min="0" max="4" value="0" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="G1">First Period Grade (G1)</label>
+                            <input type="number" id="G1" name="G1" min="0" max="20" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="G2">Second Period Grade (G2)</label>
+                            <input type="number" id="G2" name="G2" min="0" max="20" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="absences">Number of Absences</label>
+                            <input type="number" id="absences" name="absences" min="0" max="100" value="0" required>
+                        </div>
+                    </fieldset>
+
+                    <!-- Support & Activities -->
+                    <fieldset>
+                        <legend>🎯 Support & Activities</legend>
+                        
+                        <div class="form-group">
+                            <label for="schoolsup">School Support</label>
+                            <select id="schoolsup" name="schoolsup" required>
+                                <option value="">Select...</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="famsup">Family Support</label>
+                            <select id="famsup" name="famsup" required>
+                                <option value="">Select...</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="paid">Paid Classes</label>
+                            <select id="paid" name="paid" required>
+                                <option value="">Select...</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="activities">Extracurricular Activities</label>
+                            <select id="activities" name="activities" required>
+                                <option value="">Select...</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nursery">Attended Nursery</label>
+                            <select id="nursery" name="nursery" required>
+                                <option value="">Select...</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="higher">Wants to Attend Higher Education</label>
+                            <select id="higher" name="higher" required>
+                                <option value="">Select...</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="internet">Internet Access at Home</label>
+                            <select id="internet" name="internet" required>
+                                <option value="">Select...</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="romantic">In a Romantic Relationship</label>
+                            <select id="romantic" name="romantic" required>
+                                <option value="">Select...</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </fieldset>
+
+                    <!-- Lifestyle & Health -->
+                    <fieldset>
+                        <legend>❤️ Lifestyle & Health</legend>
+                        
+                        <div class="form-group">
+                            <label for="famrel">Family Relationships Quality (1-5)</label>
+                            <input type="range" id="famrel" name="famrel" min="1" max="5" value="3" required>
+                            <span id="famrelValue">3</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="freetime">Free Time After School (1-5)</label>
+                            <input type="range" id="freetime" name="freetime" min="1" max="5" value="3" required>
+                            <span id="freetimeValue">3</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="goout">Going Out with Friends (1-5)</label>
+                            <input type="range" id="goout" name="goout" min="1" max="5" value="3" required>
+                            <span id="gooutValue">3</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Dalc">Workday Alcohol Consumption (1-5)</label>
+                            <input type="range" id="Dalc" name="Dalc" min="1" max="5" value="1" required>
+                            <span id="DalcValue">1</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Walc">Weekend Alcohol Consumption (1-5)</label>
+                            <input type="range" id="Walc" name="Walc" min="1" max="5" value="1" required>
+                            <span id="WalcValue">1</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="health">Current Health Status (1-5)</label>
+                            <input type="range" id="health" name="health" min="1" max="5" value="3" required>
+                            <span id="healthValue">3</span>
+                        </div>
+                    </fieldset>
+
+                    <!-- Submit Button -->
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">🚀 Predict Grade</button>
+                        <button type="reset" class="btn btn-secondary">🔄 Reset Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsContainer" class="results-container hidden">
+                <div class="results-card">
+                    <h2>📊 Prediction Results</h2>
+                    <div class="result-content">
+                        <p class="result-label">Predicted Final Grade (G3)</p>
+                        <p id="predictionResult" class="result-value">--</p>
+                        <div id="gradeIndicator" class="grade-indicator"></div>
+                        <p id="gradeComment" class="grade-comment"></p>
+                    </div>
+                    <button onclick="scrollToForm()" class="btn btn-secondary">← Back to Form</button>
+                </div>
+            </div>
+
+            <!-- Error Section -->
+            <div id="errorContainer" class="error-container hidden">
+                <div class="error-card">
+                    <h2>❌ Error</h2>
+                    <p id="errorMessage"></p>
+                    <button onclick="closeError()" class="btn btn-secondary">Dismiss</button>
+                </div>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loadingContainer" class="loading-container hidden">
+                <div class="spinner"></div>
+                <p>Processing your prediction...</p>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Student Grade Prediction System | Backend: FastAPI at http://127.0.0.1:8000</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -5,10 +5,18 @@ import joblib
 from student_pipeline import student_data_prep
 import traceback
 import os
+from fastapi.middleware.cors import CORSMiddleware
 
 # 🎓 FastAPI Uygulaması
 app = FastAPI(title="Student Final Grade Prediction API")
-
+# Allow CORS from any origin
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # 🧠 Modeli yükle
 try:
     model = joblib.load("voting_reg1.pkl")
