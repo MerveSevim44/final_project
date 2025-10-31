@@ -94,13 +94,12 @@ def student_data_prep(dataframe, is_training=True):
     
     # Make a copy to avoid modifying the original
     dataframe = dataframe.copy()
-    
-    #dataframe['NEW_internet_romantic_interaction'] = (dataframe['internet'].map({"yes": 1, "no": 0}) * dataframe['romantic'].map(
-     #   {"yes": 1, "no": 0})) + 1
+
+    dataframe['NEW_internet_romantic_interaction'] = (dataframe['internet'].map({"yes": 1, "no": 0}) * dataframe['romantic'].map({"yes": 1, "no": 0})) + 1
     dataframe['NEW_study_fail_interaction'] = dataframe['studytime'] * dataframe['failures']
-    #dataframe['NEW_higher_health_interaction'] = dataframe['higher'].map({"yes": 1, "no": 0}) * dataframe['health']
-    #dataframe['NEW_study_fail_time_socio'] = dataframe['studytime'] * dataframe['failures'] * dataframe['famsize'].map({"LE3": 1, "GT3": 0})
-    #dataframe['NEW_school_famsize_interaction'] = dataframe['school'] + "_" + dataframe['famsize']
+    dataframe['NEW_higher_health_interaction'] = dataframe['higher'].map({"yes": 1, "no": 0}) * dataframe['health']
+    dataframe['NEW_study_fail_time_socio'] = dataframe['studytime'] * dataframe['failures'] * dataframe['famsize'].map({"LE3": 1, "GT3": 0})
+    dataframe['NEW_school_famsize_interaction'] = dataframe['school'] + "_" + dataframe['famsize']
     dataframe['NEW_alc_health_interaction'] = dataframe['Dalc'] * dataframe['Walc'] * dataframe['health']
     
     # Check if G3 exists (training mode) or not (prediction mode)

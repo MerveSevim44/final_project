@@ -45,6 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Form submission
     form.addEventListener('submit', handleFormSubmit);
+    // Autofill test data button
+    const autofillBtn = document.getElementById('autofillTestBtn');
+    if (autofillBtn) {
+        autofillBtn.addEventListener('click', autofillTestData);
+    }
 });
 
 // ===========================
@@ -52,22 +57,25 @@ document.addEventListener('DOMContentLoaded', () => {
 // ===========================
 
 async function handleFormSubmit(e) {
-   // e.preventDefault();
-/*
+    e.preventDefault();
+    
     // Hide previous results/errors
     resultsContainer.classList.add('hidden');
     errorContainer.classList.add('hidden');
-*/
+    
     // Show loading spinner
     showLoading();
 
     try {
+        console.log('🚀 Form submission initiated');
         // Collect form data
         const formData = collectFormData();
         
         console.log('📤 Sending data to API:', formData);
         console.log('📌 API URL:', API_URL);
         console.log('📊 Number of fields:', Object.keys(formData).length);
+
+
 
         // Send request to backend
         const response = await fetch(API_URL, {
@@ -260,44 +268,13 @@ function scrollToError() {
 // Utility Functions
 // ===========================
 
-// Reset form values (triggers browser's default reset)
-function resetForm() {
-    form.reset();
-    // Reset range slider displays
-    document.getElementById('famrelValue').textContent = '3';
-    document.getElementById('freetimeValue').textContent = '3';
-    document.getElementById('gooutValue').textContent = '3';
-    document.getElementById('DalcValue').textContent = '1';
-    document.getElementById('WalcValue').textContent = '1';
-    document.getElementById('healthValue').textContent = '3';
-}
+
 
 // ===========================
 // Keyboard Shortcuts
 // ===========================
 
-document.addEventListener('keydown', (e) => {
-    // Alt + S: Submit form
-    if (e.altKey && e.key === 's') {
-        e.preventDefault();
-        form.dispatchEvent(new Event('submit'));
-    }
-    // Alt + R: Reset form
-    if (e.altKey && e.key === 'r') {
-        e.preventDefault();
-        resetForm();
-    }
-    // Alt + C: Close error
-    if (e.altKey && e.key === 'c') {
-        e.preventDefault();
-        closeError();
-    }
-    // Escape: Close error
-    if (e.key === 'Escape') {
-        closeError();
-    }
-});
-
+-
 // ===========================
 // API Connection Test
 // ===========================
@@ -325,6 +302,81 @@ async function testAPIConnection() {
         console.warn('⚠️ Cannot connect to API server at http://127.0.0.1:8000');
         console.warn('Make sure the FastAPI server is running with: uvicorn main:app --reload');
     }
+}
+
+// ===========================
+// Autofill Test Data
+// ===========================
+
+const TEST_DATA = {
+    school: 'GP',
+    sex: 'F',
+    age: 17,
+    address: 'U',
+    famsize: 'GT3',
+    Pstatus: 'T',
+    Medu: 4,
+    Fedu: 4,
+    Mjob: 'teacher',
+    Fjob: 'services',
+    reason: 'course',
+    guardian: 'mother',
+    traveltime: 1,
+    studytime: 2,
+    failures: 0,
+    schoolsup: 'no',
+    famsup: 'yes',
+    paid: 'no',
+    activities: 'yes',
+    nursery: 'yes',
+    higher: 'yes',
+    internet: 'yes',
+    romantic: 'no',
+    famrel: 4,
+    freetime: 3,
+    goout: 2,
+    Dalc: 1,
+    Walc: 1,
+    health: 3,
+    absences: 2,
+    G1: 14,
+    G2: 15
+};
+
+function autofillTestData() {
+    console.log('🧪 Autofill: filling form with test data');
+    for (const [key, value] of Object.entries(TEST_DATA)) {
+        // Prefer getElementById, fallback to querySelector by name
+        let el = document.getElementById(key);
+        if (!el) el = document.querySelector(`[name="${key}"]`);
+        if (!el) continue;
+
+        // Set value depending on element type
+        if (el.tagName === 'SELECT' || el.type === 'select-one') {
+            el.value = String(value);
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+        } else if (el.type === 'range' || el.type === 'number' || el.type === 'text') {
+            el.value = value;
+            // For range inputs, also update display spans
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+        } else {
+            try { el.value = value; } catch (e) { /* ignore */ }
+        }
+
+        // If the field has a paired display <span id="<name>Value">, update it
+        const displaySpan = document.getElementById(`${key}Value`);
+        if (displaySpan) displaySpan.textContent = String(value);
+    }
+
+    // Clear previous results/errors and hide them
+    if (resultsContainer) resultsContainer.classList.add('hidden');
+    if (errorContainer) errorContainer.classList.add('hidden');
+
+    // Scroll to form so user can review
+    setTimeout(() => {
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 150);
 }
 
 // ===========================
